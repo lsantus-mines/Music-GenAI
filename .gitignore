@@ -1,0 +1,60 @@
+--- Secrets et Fichiers de Configuration ---
+
+C'est la ligne la plus importante pour ta sécurité
+
+Elle ignore le dossier .streamlit ET son contenu
+
+.streamlit/
+secrets.toml
+.env
+*.env
+
+--- Environnements Virtuels Python ---
+
+Ignore le dossier de l'environnement virtuel
+
+venv/
+.venv/
+*.venv
+env/
+.env/
+
+--- Fichiers Cache et Compilés Python ---
+
+pycache/
+*.pyc
+*.pyo
+*.pyd
+*.so
+
+--- Fichiers de Configuration IDE ---
+
+Visual Studio Code
+
+.vscode/
+
+PyCharm
+
+.idea/
+
+--- Fichiers de Dépendances et Installation ---
+
+dist/
+build/
+*.egg-info/
+pip-wheel-metadata/
+
+--- Fichiers système (Mac/Windows) ---
+
+macOS
+
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+Windows
+
+Thumbs.db
+ehthumbs.db
+desktop.ini
