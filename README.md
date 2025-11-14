@@ -1,227 +1,147 @@
 # Music-GenAI
 
-Projet: Générateur de Noms de Musique (GenAI + Spotify)
+🎵 Générateur de Noms de Musique IA
 
-Bienvenue ! Ce document est ton guide principal. Il va te prendre par la main, étape par étape, de zéro jusqu'à avoir ton application qui fonctionne.
+Ce projet est une application web conçue pour les artistes, musiciens et créateurs. Elle utilise l'IA Générative pour créer des noms de chansons originaux basés sur une humeur, un genre ou un concept fourni par l'utilisateur.
 
-1. Concept de l'Application (Rappel)
+Pour enrichir l'inspiration, l'application se connecte également à l'API Spotify pour analyser des pistes existantes correspondant à l'humeur.
 
-Nous allons créer un site web simple (avec Streamlit) où :
+➡️ https://music-genai.streamlit.app
 
-Tu entres une "humeur" (ex: "triste sous la pluie").
+🚀 Concept
 
-Le code va chercher sur Spotify des chansons qui correspondent à cette humeur (ex: "Hallelujah", "Someone Like You").
+L'objectif est de combler le "syndrome de la page blanche" lors de la création musicale.
 
-Il envoie l'humeur ET ces exemples de chansons à une IA (Llama 3) en lui disant : "Inspire-toi de ça et invente 5 nouveaux noms de chansons".
+L'utilisateur entre une humeur (ex: "nuit pluvieuse à Paris", "road trip ensoleillé").
 
-Le site t'affiche les 5 noms inventés par l'IA.
+L'application interroge Spotify pour trouver des chansons existantes (ex: 'Nightcall' de Kavinsky) pour servir d'"inspiration".
 
-2. Guide Pas à Pas (Niveau Débutant)
+L'application envoie l'humeur ET l'inspiration à un modèle de langage (IA).
 
-Suis ces étapes dans l'ordre. Ne t'inquiète pas, chaque commande est expliquée.
+L'IA génère 5 nouveaux noms de chansons originaux et créatifs.
 
-Étape 1: Mettre en place ton "Quartier Général" (GitHub)
+✨ Fonctionnalités
 
-Ce qu'on fait : On crée un dossier sur Internet (un "dépôt" GitHub) pour stocker notre code. C'est la consigne "Utiliser Git".
+Interface utilisateur simple et réactive créée avec Streamlit.
 
-Crée un compte GitHub : Si ce n'est pas déjà fait, va sur GitHub.com et crée un compte gratuit.
+Inspiration en temps réel via l'API Spotify.
 
-Crée un nouveau dépôt :
+Architecture GenAI Hybride :
 
-Clique sur le "+" en haut à droite, puis "New repository".
+Mode Local 💻 : Utilise Ollama (avec llama3) pour une génération 100% gratuite et open-source.
 
-Repository name : genai-music-generator (ou un nom que tu aimes).
+Mode Déployé ☁️ : Utilise l'API OpenAI (gpt-4o-mini) pour une génération stable, rapide et fiable sur le cloud.
 
-Description : "Générateur de noms de musique avec GenAI et Spotify."
+Détection automatique du mode (local vs cloud) basée sur la présence des clés API.
 
-Public/Private : Choisis "Public".
+🛠️ Choix Techniques et Architecture
 
-IMPORTANT : Coche la case "Add a README.md file".
+Ce projet respecte les consignes en priorisant le local, tout en utilisant une API stable pour le déploiement public.
 
-IMPORTANT : Clique sur "Add .gitignore" et choisis "Python" dans la liste.
+UI (Front-end) : Streamlit, pour sa simplicité et sa capacité de déploiement rapide sur Streamlit Cloud.
 
-Clique sur "Create repository".
+Versionning : Git & GitHub, pour le suivi des versions et la sécurité (avec un .gitignore robuste pour protéger les clés API).
 
-Copier le projet sur ton ordinateur (Cloner) :
+API de Données : Spotify API, pour récupérer des données musicales pertinentes servant d'inspiration.
 
-Sur la page de ton nouveau dépôt, clique sur le bouton vert "< > Code".
+IA Locale (Priorité n°1) : Ollama (Llama 3). C'est le moteur principal pour le développement local. Il est gratuit, open-source et performant.
 
-Copie l'URL (celle qui finit par .git).
+IA Cloud (Déploiement) : OpenAI API (GPT-4o mini). Après avoir constaté l'instabilité extrême des API gratuites (Hugging Face, Groq) qui changent leurs modèles sans préavis (erreurs 404, 410, "decommissioned"), le passage à une API payante mais stable était nécessaire pour garantir la fonctionnalité de l'application déployée, conformément au "dernier recours" autorisé par les consignes.
 
-Ouvre un Terminal (sur Mac/Linux) ou Git Bash / PowerShell (sur Windows).
+⚙️ Comment l'installer et le lancer localement
 
-Navigue là où tu veux mettre ton projet (ex: cd Documents/Projets) et tape :
+Suivez ces étapes pour lancer le projet sur votre propre machine (en mode Ollama).
 
-git clone [TON_URL_COLLEE_ICI]
+Prérequis
 
+Python 3.9+
 
-Bravo, tu as maintenant un dossier genai-music-generator sur ton PC. Entre dedans :
+Git
 
-cd genai-music-generator
-
-
-C'est dans ce dossier que nous allons travailler.
-
-Étape 2: Préparer ton "Atelier" (Environnement Python)
-
-Ce qu'on fait : On crée une "bulle" (un environnement virtuel) pour ce projet, afin que les outils (librairies) qu'on installe n'entrent pas en conflit avec d'autres projets.
-
-Crée la bulle (venv) :
-
-Assure-toi d'être dans le dossier de ton projet (voir étape 1).
-
-Tape cette commande (elle crée un dossier venv que le .gitignore va ignorer) :
-
-python3 -m venv venv
-
-
-(Si python3 ne marche pas, essaye python)
-
-Active la bulle :
-
-Sur Mac/Linux :
-
-source venv/bin/activate
-
-
-Sur Windows (PowerShell) :
-
-.\venv\Scripts\Activate
-
-
-Tu devrais voir (venv) apparaître au début de ta ligne de commande. La bulle est active ! (Tu devras refaire cette étape à chaque fois que tu ouvres un nouveau terminal pour ce projet).
-
-Étape 3: Installer les "Outils" (Librairies Python)
-
-Ce qu'on fait : On installe les outils (Streamlit, Spotipy, Ollama) dont notre code a besoin.
-
-requirements.txt : C'est le fichier qui liste tous les outils. J'ai déjà créé ce fichier pour toi (voir le fichier requirements.txt à côté).
-
-Installer depuis la liste :
-
-Pendant que ta bulle (venv) est active, tape :
-
-pip install -r requirements.txt
-
-
-Cela va lire le fichier requirements.txt et tout installer automatiquement.
-
-Étape 4: Installer le "Cerveau" (IA Générative - Ollama)
-
-Ce qu'on fait : On installe l'IA (le LLM) sur ta machine. C'est 100% gratuit et local.
-
-Télécharge Ollama : Va sur Ollama.com et télécharge l'application pour ton système (Mac, Windows, Linux). Installe-la.
-
-Laisse-le tourner : Une fois installé, Ollama tourne en arrière-plan (tu verras une petite icône).
-
-Télécharge le modèle (le cerveau) :
-
-Ouvre ton terminal (pas besoin d'être dans le dossier du projet ou d'activer la bulle pour ça).
-
-Tape cette commande. Elle télécharge le modèle "Llama 3" (environ 5GB, ça peut prendre un peu de temps) :
+Ollama (et avoir lancé le modèle llama3 au moins une fois)
 
 ollama pull llama3
 
 
-C'est tout ! L'IA est prête à être appelée par notre code. Laisse juste Ollama tourner en arrière-plan quand tu utilises ton app.
+1. Cloner le Dépôt
 
-Étape 5: Obtenir les "Clés de la voiture" (API Spotify)
+Ouvrez votre terminal et clonez ce projet :
 
-Ce qu'on fait : On demande à Spotify un "Client ID" et un "Client Secret" pour que notre code ait le droit d'utiliser leur API (leur base de données). C'est gratuit.
-
-Va au tableau de bord : Connecte-toi sur Spotify Developer Dashboard.
-
-Crée une "App" :
-
-Clique sur "Create app".
-
-Donne-lui un nom (ex: "GenAI Music") et une description. Coche les cases.
-
-Une fois créée, tu arrives sur la page de ton app.
-
-Copie tes clés :
-
-Tu verras "Client ID". Copie-le.
-
-Clique sur "Client secret" (ou "Show client secret"). Copie-le.
-
-OÙ METTRE CES CLÉS ? (TRÈS IMPORTANT)
-
-NE LES METS JAMAIS DANS TON CODE app.py !
-
-NE LES ENVOIE JAMAIS SUR GITHUB !
-
-Voici la bonne méthode (sécurisée) :
-
-Dans le dossier de ton projet (genai-music-generator), crée un nouveau dossier nommé .streamlit (avec le point au début).
-
-À l'intérieur de ce dossier .streamlit, crée un fichier nommé secrets.toml.
-
-Ouvre secrets.toml et écris-y EXACTEMENT ceci, en remplaçant par tes clés :
-
-# Ce fichier .streamlit/secrets.toml est pour tes clés.
-# Il est déjà dans le .gitignore, donc il n'ira pas sur GitHub.
-
-SPOTIPY_CLIENT_ID = "TON_CLIENT_ID_COPIÉ_ICI"
-SPOTIPY_CLIENT_SECRET = "TON_CLIENT_SECRET_COPIÉ_ICI"
+git clone [https://github.com/ton-username/ton-repo-name.git](https://github.com/ton-username/ton-repo-name.git)
+cd ton-repo-name
 
 
-Streamlit (notre interface) est assez intelligent pour lire ce fichier automatiquement et de manière sécurisée.
+2. Créer un Environnement Virtuel
 
-Étape 6: Ajouter le Code de l'Application
+C'est essentiel pour isoler les dépendances de votre projet.
 
-Ce qu'on fait : On ajoute le fichier app.py (que j'ai généré pour toi) dans notre dossier.
+# Créer l'environnement
+python3 -m venv venv
 
-Copie le fichier : Prends le fichier app.py que je t'ai donné.
+# Activer l'environnement
+# Sur macOS/Linux:
+source venv/bin/activate
+# Sur Windows:
+.\venv\Scripts\Activate
 
-Colle-le : Mets-le à la racine de ton dossier de projet genai-music-generator (à côté de requirements.txt et du dossier venv).
 
-Étape 7: Lancer l'Application !
+3. Installer les Dépendances
 
-Ce qu'on fait : On lance le serveur web local de Streamlit pour voir notre application.
+Installez toutes les librairies nécessaires (Streamlit, Ollama, Spotipy, OpenAI).
 
-Vérifie :
+pip install -r requirements.txt
 
-Tu es dans le dossier genai-music-generator dans ton terminal.
 
-Ta bulle (venv) est active (tu vois (venv)).
+4. Configurer vos Clés Secrètes (Secrets)
 
-Ollama tourne en arrière-plan.
+L'application a besoin de clés API pour fonctionner. Créez un dossier et un fichier pour les stocker localement.
 
-Lance la magie :
+Créez un dossier .streamlit à la racine de votre projet.
+
+Dans ce dossier, créez un fichier nommé secrets.toml.
+
+Ouvrez secrets.toml et collez-y vos clés Spotify (nécessaires pour le mode local) :
+
+# Fichier: .streamlit/secrets.toml
+# Requis pour le mode local
+
+SPOTIPY_CLIENT_ID = "VOTRE_CLIENT_ID_SPOTIFY_ICI"
+SPOTIPY_CLIENT_SECRET = "VOTRE_CLIENT_SECRET_SPOTIFY_ICI"
+
+# Vous pouvez aussi ajouter votre clé OpenAI ici si vous
+# voulez tester le mode OpenAI en local.
+# OPENAI_API_KEY = "sk-..."
+
+
+IMPORTANT : Le fichier .gitignore de ce projet est configuré pour ignorer le dossier .streamlit/, vous ne publierez donc jamais vos clés secrètes sur GitHub.
+
+5. Lancer l'Application
+
+Assurez-vous que votre environnement venv est activé et que votre application Ollama tourne en arrière-plan.
 
 streamlit run app.py
 
 
-Ouvre ton navigateur : Ton terminal va te donner une adresse URL, sûrement http://localhost:8501. Ouvre-la.
+Votre navigateur devrait s'ouvrir automatiquement sur http://localhost:8501.
 
-Teste ! Écris une humeur, clique sur le bouton, et vois l'IA te générer des noms de chansons !
+☁️ Déploiement sur Streamlit Cloud
 
-Étape 8: Sauvegarder ton travail sur GitHub (Commit/Push)
+Cette application est conçue pour un déploiement facile sur Streamlit Cloud.
 
-Ce qu'on fait : On envoie notre code (le app.py, le README.md mis à jour, le requirements.txt) sur notre dépôt GitHub.
+Faites un "push" de votre code sur un dépôt GitHub.
 
-Arrête ton app : Dans le terminal, appuie sur Ctrl+C pour arrêter le serveur Streamlit.
+Connectez votre compte GitHub à Streamlit Cloud.
 
-Ajoute tes changements :
+Pointez Streamlit vers votre dépôt et le fichier app.py.
 
-git add .
+Dans les Settings > Secrets de l'application Streamlit, ajoutez vos 3 clés (Spotify ID, Spotify Secret, et OPENAI_API_KEY).
 
+L'application détectera la clé OPENAI_API_KEY et basculera automatiquement en mode "OpenAI".
 
-(Ceci dit à Git : "Regarde tous les nouveaux fichiers et les changements". Il ignorera venv et secrets.toml grâce au .gitignore.)
+🚧 Limitations
 
-"Commit" tes changements (Crée un point de sauvegarde) :
+API OpenAI : Le mode déployé utilise gpt-4o-mini. Bien que très bon marché, c'est une API payante.
 
-git commit -m "feat: Ajout de l'application Streamlit V1 (Spotify + Ollama)"
+Ollama : Le mode local nécessite que l'utilisateur ait installé et lancé l'application Ollama, ainsi que le modèle llama3.
 
-
-(Le message -m "..." est une description de ce que tu as fait.)
-
-"Push" tes changements (Envoie-les sur GitHub) :
-
-git push origin main
-
-
-(Si main ne marche pas, essaye master)
-
-C'EST TERMINÉ ! Tu as maintenant un projet fonctionnel sur ta machine, et le code est sauvegardé sur GitHub, respectant toutes les consignes.
+Spotify : L'inspiration est limitée à ce que l'API Spotify peut trouver. Des humeurs très abstraites peuvent ne renvoyer aucune chanson.
